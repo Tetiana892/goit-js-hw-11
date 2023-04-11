@@ -7,15 +7,24 @@ export class PixabayAPI {
   fetchPhotosByQuery(page) {
     return axios.get(`${this.#BASE_URL}`, {
       params: {
-        q: 'random',
-        page,
-        per_page: '40',
+        q: this.#query,
+        page: 1,
+        per_page: 40,
         image_type: 'photo',
         orientation: 'horizontal',
         safesearch: ' true',
         key: this.#API_KEY,
       },
     });
+  }
+  incrementPage() {
+    this.page += 1;
+  }
+  resetPage() {
+    this.page = 1;
+  }
+  get query() {
+    return this.#query;
   }
 
   set query(newQuery) {
