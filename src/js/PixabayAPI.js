@@ -17,9 +17,15 @@ export class PixabayAPI {
       },
     });
   }
+  // return fetch(url).then(data => {
+  //   this.incrementPage();
+  //   return data.json();
+  // });
+
   incrementPage() {
     this.page += 1;
   }
+
   resetPage() {
     this.page = 1;
   }
