@@ -13,26 +13,26 @@
 .search-form {
   display: flex;
   justify-content: center;
-
   width: 100%;
 }
 
 .search-input {
   width: 20%;
-  height: 40px;
+  height: 80px;
   border-radius: 4px 0 0 4px;
   border: none;
   outline: none;
   background-color: #fff;
   padding: 8px 10px;
   font: inherit;
+  line-height: 1.5;
 }
 .search-form button {
   display: flex;
   justify-content: center;
   align-items: center;
 
-  width: 2.5em;
+  width: 40px;
   border: none;
   background-color: rgb(200, 200, 200);
   border-radius: 0 4px 4px 0;
@@ -42,7 +42,6 @@
 .search-form button:hover,
 .search-form button:focus {
   background-color: rgb(180, 180, 180);
-  transition: all 0.3s;
 }
 .container-render-list {
   width: 100%;
@@ -99,10 +98,6 @@
   font-size: 24px;
   font-weight: 700;
   color: black;
-
-  &.is-hidden {
-    display: none;
-  }
 }
 
 .btn-load-more {
@@ -124,5 +119,8 @@
   &:focus {
     color: black;
     background-color: rgb(41, 47, 203);
+  }
+  &.is-hidden {
+    display: none;
   }
 }

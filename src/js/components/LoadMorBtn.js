@@ -1,7 +1,6 @@
 export default class LoadMoreBtn {
   constructor({ selector, isHidden = false }) {
     this.button = this.getButton(selector);
-    // if (isHidden) this.hide();
     isHidden && this.hide();
   }
 
