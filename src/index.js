@@ -4,6 +4,7 @@ import createGalleryCard from './templates/gallery-cards.hbs';
 import Notiflix from 'notiflix';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
+import { onScroll, onToTopBtn } from './js/scroll';
 
 const galleryEl = document.querySelector('.gallery');
 const searchForm = document.querySelector('#search-form');
@@ -19,6 +20,9 @@ let lightbox = new SimpleLightbox('.photo-card a', {
 
 searchForm.addEventListener('submit', onSearch);
 loadMoreBtn.addEventListener('click', onLoadMore);
+
+onScroll();
+onToTopBtn();
 
 async function onSearch(e) {
   e.preventDefault();
@@ -57,6 +61,7 @@ async function onLoadMore() {
   try {
     const response = await pixabayApi.fetchPhotosByQuery();
     createMarkup(response.data.hits);
+
     lightbox.refresh();
   } catch (err) {
     loadMoreBtn.classList.add('is-hidden');
