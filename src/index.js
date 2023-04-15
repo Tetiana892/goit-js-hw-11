@@ -43,16 +43,21 @@ async function onSearch(e) {
   try {
     const response = await pixabayApi.fetchPhotosByQuery();
     const totalPicturs = response.data.totalHits;
+
     createMarkup(response.data.hits);
     lightbox.refresh();
 
+    Notiflix.Notify.success(
+      `Hooray! We found ${response.data.totalHits} images.`
+    );
+
     if (totalPicturs < 40) {
-      alertEndOfSearch();
+      loadMoreBtn.classList.add('is-hidden');
       return;
     }
     loadMoreBtn.classList.remove('is-hidden');
   } catch (error) {
-    alertNoImagesFound();
+    console.log(error);
   }
 }
 
@@ -61,9 +66,12 @@ async function onLoadMore() {
   try {
     const response = await pixabayApi.fetchPhotosByQuery();
     createMarkup(response.data.hits);
-
     lightbox.refresh();
-  } catch (err) {
+
+    if ((currentHits = response.data.totalHits)) {
+      loadMoreBtn.classList.add('is-hidden');
+    }
+  } catch (error) {
     loadMoreBtn.classList.add('is-hidden');
     alertEndOfSearch();
   }
@@ -74,23 +82,17 @@ function createMarkup(hits) {
   galleryEl.insertAdjacentHTML('beforeend', markup);
 }
 
-function alertImagesFound() {
-  Notiflix.Notify.success(
-    `Hooray! We found ${response.data.totalHits} images.`
-  );
-}
-
 function alertNoEmptySearch() {
   Notiflix.Notify.failure(
     'The search string cannot be empty. Please specify your search query.'
   );
 }
 
-function alertNoImagesFound() {
-  Notiflix.Notify.failure(
-    'Sorry, there are no images matching your search query. Please try again.'
-  );
-}
+// function alertNoImagesFound() {
+//   Notiflix.Notify.failure(
+//     'Sorry, there are no images matching your search query. Please try again.'
+//   );
+// }
 
 function alertEndOfSearch() {
   Notiflix.Notify.failure(
