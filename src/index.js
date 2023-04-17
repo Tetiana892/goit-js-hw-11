@@ -37,24 +37,32 @@ async function onSearch(e) {
   pixabayApi.page = 1;
 
   if (searchQuery === '') {
-    alertNoEmptySearch();
+    Notiflix.Notify.failure(
+      'The search string cannot be empty. Please specify your search query.'
+    );
     return;
   }
+
   try {
     const response = await pixabayApi.fetchPhotosByQuery();
     const totalPicturs = response.data.totalHits;
 
+    if (totalPicturs === 0) {
+      Notiflix.Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
+      return;
+    }
     createMarkup(response.data.hits);
     lightbox.refresh();
-
-    Notiflix.Notify.success(
-      `Hooray! We found ${response.data.totalHits} images.`
-    );
+    scrollPage();
+    Notiflix.Notify.success(`Hooray! We found ${totalPicturs} images.`);
 
     if (totalPicturs < 40) {
       loadMoreBtn.classList.add('is-hidden');
       return;
     }
+
     loadMoreBtn.classList.remove('is-hidden');
   } catch (error) {
     console.log(error);
@@ -65,15 +73,23 @@ async function onLoadMore() {
   pixabayApi.page += 1;
   try {
     const response = await pixabayApi.fetchPhotosByQuery();
+
     createMarkup(response.data.hits);
     lightbox.refresh();
+    scrollPage();
 
-    if ((currentHits = response.data.totalHits)) {
+    if (response > response.data.hits) {
+      Notiflix.Notify.failure(
+        "We're sorry, but you've reached the end of search results."
+      );
       loadMoreBtn.classList.add('is-hidden');
     }
   } catch (error) {
+    console.log(error);
+    Notiflix.Notify.failure(
+      "We're sorry, but you've reached the end of search results."
+    );
     loadMoreBtn.classList.add('is-hidden');
-    alertEndOfSearch();
   }
 }
 
@@ -82,20 +98,13 @@ function createMarkup(hits) {
   galleryEl.insertAdjacentHTML('beforeend', markup);
 }
 
-function alertNoEmptySearch() {
-  Notiflix.Notify.failure(
-    'The search string cannot be empty. Please specify your search query.'
-  );
-}
+function scrollPage() {
+  const { height: cardHeight } = document
+    .querySelector('.gallery')
+    .firstElementChild.getBoundingClientRect();
 
-// function alertNoImagesFound() {
-//   Notiflix.Notify.failure(
-//     'Sorry, there are no images matching your search query. Please try again.'
-//   );
-// }
-
-function alertEndOfSearch() {
-  Notiflix.Notify.failure(
-    "We're sorry, but you've reached the end of search results."
-  );
+  window.scrollBy({
+    top: cardHeight * 2,
+    behavior: 'smooth',
+  });
 }
