@@ -11,6 +11,7 @@ const searchForm = document.querySelector('#search-form');
 const loadMoreBtn = document.querySelector('.btn-load-more');
 
 const pixabayApi = new PixabayAPI();
+const PER_PAGE = 40;
 
 let lightbox = new SimpleLightbox('.photo-card a', {
   captions: true,
@@ -73,23 +74,20 @@ async function onLoadMore() {
   pixabayApi.page += 1;
   try {
     const response = await pixabayApi.fetchPhotosByQuery();
+    const lastPage = Math.ceil(response.data.totalHits / PER_PAGE);
 
     createMarkup(response.data.hits);
-    lightbox.refresh();
-    scrollPage();
-
-    if (response > response.data.hits) {
+    if (lastPage === pixabayApi.page) {
       Notiflix.Notify.failure(
         "We're sorry, but you've reached the end of search results."
       );
       loadMoreBtn.classList.add('is-hidden');
+      return;
     }
+    lightbox.refresh();
+    scrollPage();
   } catch (error) {
     console.log(error);
-    Notiflix.Notify.failure(
-      "We're sorry, but you've reached the end of search results."
-    );
-    loadMoreBtn.classList.add('is-hidden');
   }
 }
 
